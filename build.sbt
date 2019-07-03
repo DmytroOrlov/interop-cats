@@ -17,9 +17,6 @@ inThisBuild(
         url("http://degoes.net")
       )
     ),
-    pgpPublicRing := file("/tmp/public.asc"),
-    pgpSecretRing := file("/tmp/secret.asc"),
-    releaseEarlyWith := SonatypePublisher,
     scmInfo := Some(
       ScmInfo(url("https://github.com/zio/interop-cats/"), "scm:git:git@github.com:zio/interop-cats.git")
     )
@@ -36,6 +33,7 @@ lazy val root = project
   .enablePlugins(ScalaJSPlugin)
   .aggregate(interopCatsJVM, interopCatsJS)
   .settings(
+    inThisBuild(Seq(publishTo := Some("releases" at "https://nexus.com/nexus/content/repositories/releases"))),
     skip in publish := true,
     unusedCompileDependenciesFilter -= moduleFilter("org.scala-js", "scalajs-library")
   )
@@ -47,10 +45,10 @@ lazy val interopCats = crossProject(JSPlatform, JVMPlatform)
   .settings(buildInfoSettings)
   .settings(
     libraryDependencies ++= Seq(
-      "dev.zio"       %%% "zio"                  % "1.0.0-RC8-12",
-      "org.typelevel" %%% "cats-effect"          % "1.3.1" % Optional,
+      "dev.zio"       %%% "zio"                  % "1.0.0-RC9-2",
+      "org.typelevel" %%% "cats-effect"          % "2.0.0-M4" % Optional,
       "org.typelevel" %%% "cats-mtl-core"        % "0.5.0" % Optional,
-      "co.fs2"        %%% "fs2-core"             % "1.0.5" % Test,
+      "co.fs2"        %%% "fs2-core"             % "1.1.0-M1" % Test,
       "dev.zio"       %%% "zio"                  % "1.0.0-RC8-12" % Test classifier "tests",
       "org.specs2"    %%% "specs2-core"          % "4.5.1" % Test,
       "org.specs2"    %%% "specs2-scalacheck"    % "4.5.1" % Test,
@@ -83,7 +81,7 @@ val CatsScalaCheckShapelessVersion = Def.setting {
     case Some((2, v)) if v <= 12 =>
       "1.1.8"
     case _ =>
-      "1.2.0-1+7-a4ed6f38-SNAPSHOT" // TODO: Stable version
+      "1.2.3" // TODO: Stable version
   }
 }
 
@@ -95,8 +93,8 @@ lazy val interopCatsJVM = interopCats.jvm
     // TODO: Remove once scalacheck-shapeless has a stable version for 2.13.0-M5
     resolvers += Resolver.sonatypeRepo("snapshots"),
     libraryDependencies ++= Seq(
-      "org.typelevel"              %% "cats-effect-laws"                                                 % "1.3.1"                              % Test,
-      "org.typelevel"              %% "cats-testkit"                                                     % "1.6.1"                              % Test,
+      "org.typelevel"              %% "cats-effect-laws"                                                 % "2.0.0-M4"                              % Test,
+      "org.typelevel"              %% "cats-testkit"                                                     % "2.0.0-M4"                              % Test,
       "org.typelevel"              %% "cats-mtl-laws"                                                    % "0.5.0"                              % Test,
       "com.github.alexarchambault" %% s"scalacheck-shapeless_${majorMinor(CatsScalaCheckVersion.value)}" % CatsScalaCheckShapelessVersion.value % Test
     ),

@@ -24,7 +24,6 @@ object ScalazBuild {
     "-language:existentials",
     "-explaintypes",
     "-Yrangepos",
-    "-Xfuture",
     "-Xsource:2.13",
     "-Xlint:_,-type-parameter-shadow",
     "-Ywarn-numeric-widen",
